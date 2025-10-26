@@ -16,12 +16,24 @@ type ConcertResponseDto = {
 	createdAt: boolean;
 };
 
+type Totals = {
+	totalSeats: number;
+	totalReserved: number;
+	totalCancel: number;
+};
+
 const API_BASE =
 	process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000/api";
 const LIST_ENDPOINT = `${API_BASE}/admin/concerts`;
+const TOTAL_URL = `${API_BASE}/admin/totals`;
 
 const Home = () => {
 	const [rows, setRows] = useState<ConcertResponseDto[]>([]);
+	const [totals, setTotals] = useState<Totals>({
+		totalSeats: 0,
+		totalReserved: 0,
+		totalCancel: 0,
+	});
 	const [loading, setLoading] = useState(true);
 	const [errorMsg, setErrorMsg] = useState<string | null>(null);
 	const [tab, setTab] = useState("overview");
@@ -34,7 +46,11 @@ const Home = () => {
 			const res = await axios.get<ConcertResponseDto[]>(LIST_ENDPOINT, {
 				headers: { "Content-Type": "application/json" },
 			});
+			const resTotal = await axios.get<Totals>(TOTAL_URL, {
+				headers: { "Content-Type": "application/json" },
+			});
 			setRows(Array.isArray(res.data) ? res.data : []);
+			setTotals(resTotal.data);
 		} catch (err: any) {
 			const apiMessage =
 				err?.response?.data?.message ||
@@ -60,9 +76,9 @@ const Home = () => {
 	return (
 		<div className="flex flex-col">
 			<div className="flex gap-[35px]">
-				<Card type={CardType.SEATS} count={30} />
-				<Card type={CardType.RESERVE} count={30} />
-				<Card type={CardType.CANCEL} count={30} />
+				<Card type={CardType.SEATS} count={totals.totalSeats} />
+				<Card type={CardType.RESERVE} count={totals.totalReserved} />
+				<Card type={CardType.CANCEL} count={totals.totalCancel} />
 			</div>
 
 			<div className="flex text-2xl mt-12 mb-5">
@@ -104,7 +120,7 @@ const Home = () => {
 									title={data.name}
 									detail={data.detail}
 									seats={data.numberOfSeats}
-									status="test"
+									status={false}
 								/>
 							);
 						})}

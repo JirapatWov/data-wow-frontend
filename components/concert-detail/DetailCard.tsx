@@ -19,14 +19,52 @@ const DetailCard = ({
 	title: string;
 	detail: string;
 	seats: string;
-	status: string;
+	status: boolean;
 }) => {
 	const { mode, setIsRefetch } = useBaseStore();
 	const [isDelete, setIsDelete] = useState(false);
 
-	const handleClick = () => {
+	const handleClick = async () => {
 		if (mode === Mode.ADMIN) {
 			setIsDelete(true);
+		} else if (status) {
+			try {
+				const res = await axios.post(
+					`${API_BASE}/user/cancel`,
+					{ concertId: id },
+					{
+						headers: { "Content-Type": "application/json" },
+					}
+				);
+
+				toast.success("Cancel successfully", {
+					position: "top-right",
+				});
+				setIsRefetch(true);
+			} catch (err: any) {
+				toast.error(err.messaage, {
+					position: "top-right",
+				});
+			}
+		} else {
+			try {
+				const res = await axios.post(
+					`${API_BASE}/user/reserve`,
+					{ concertId: id },
+					{
+						headers: { "Content-Type": "application/json" },
+					}
+				);
+
+				toast.success("Reserve successfully", {
+					position: "top-right",
+				});
+				setIsRefetch(true);
+			} catch (err: any) {
+				toast.error(err.messaage, {
+					position: "top-right",
+				});
+			}
 		}
 	};
 
@@ -59,12 +97,19 @@ const DetailCard = ({
 					<button
 						className="py-4 px-[28.5px] rounded gap-2 flex text-white text-2xl cursor-pointer"
 						style={{
-							backgroundColor: mode === Mode.ADMIN ? "#E84E4E" : "#E84E4E",
+							backgroundColor:
+								mode === Mode.ADMIN
+									? "#E84E4E"
+									: status
+									? "#F96464"
+									: "#1692EC",
 						}}
 						onClick={handleClick}
 					>
-						<img src="icon/trash.svg" width={24} height={24} alt="trash" />
-						Delete
+						{mode === Mode.ADMIN && (
+							<img src="icon/trash.svg" width={24} height={24} alt="trash" />
+						)}
+						{mode === Mode.ADMIN ? "Delete" : status ? "Cancel" : "Reserve"}
 					</button>
 				</div>
 			</div>

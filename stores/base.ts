@@ -8,6 +8,7 @@ export enum Mode {
 export enum Menu {
 	HOME,
 	HISTORY,
+	MYCONCERT,
 }
 
 interface BaseState {
@@ -24,6 +25,7 @@ export const useBaseStore = create<BaseState>((set) => ({
 	switchMode: () =>
 		set((state) => ({
 			mode: state.mode === Mode.ADMIN ? Mode.USER : Mode.ADMIN,
+			menu: Menu.HOME,
 		})),
 	menu: Menu.HOME,
 	setMenu: (menu: Menu) =>
