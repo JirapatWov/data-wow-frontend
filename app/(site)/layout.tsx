@@ -1,4 +1,5 @@
 import SideBar from "@/components/sidebar/SideBar";
+import { ToastContainer } from "react-toastify";
 
 export default function SiteLayout({
 	children,
@@ -11,6 +12,7 @@ export default function SiteLayout({
 			<main className="flex-1 overflow-auto px-[40px] py-[64px] bg-[#FBFBFB]">
 				{children}
 			</main>
+			<ToastContainer />
 		</div>
 	);
 }

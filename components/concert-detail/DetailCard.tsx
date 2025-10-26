@@ -5,10 +5,12 @@ import { Mode, useBaseStore } from "@/stores/base";
 const DetailCard = ({
 	title,
 	detail,
+	seats,
 	status,
 }: {
 	title: string;
 	detail: string;
+	seats: string;
 	status: string;
 }) => {
 	const { mode } = useBaseStore();
@@ -20,7 +22,7 @@ const DetailCard = ({
 			<div className="flex justify-between">
 				<div className="flex gap-2 items-center text-2xl">
 					<img src="icon/user-black.svg" width={32} height={32} alt="user" />
-					500
+					{seats ?? 0}
 				</div>
 				<button
 					className="py-4 px-[28.5px] rounded gap-2 flex text-white text-2xl cursor-pointer"
