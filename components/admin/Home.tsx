@@ -75,7 +75,7 @@ const Home = () => {
 
 	return (
 		<div className="flex flex-col">
-			<div className="flex gap-[35px]">
+			<div className="flex flex-col md:flex-row gap-[35px]">
 				<Card type={CardType.SEATS} count={totals.totalSeats} />
 				<Card type={CardType.RESERVE} count={totals.totalReserved} />
 				<Card type={CardType.CANCEL} count={totals.totalCancel} />

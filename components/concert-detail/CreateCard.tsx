@@ -86,7 +86,7 @@ const CreateCard = ({
 			<h1 className="text-[#1692EC] text-[40px] font-semibold">Create</h1>
 			<hr className="border-[#C2C2C2]" />
 
-			<div className="text-2xl flex gap-6">
+			<div className="text-2xl flex gap-6 flex-col md:flex-row">
 				<div className="flex flex-col gap-4 w-full">
 					Concert Name
 					<input
