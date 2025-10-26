@@ -15,6 +15,8 @@ interface BaseState {
 	switchMode: () => void;
 	menu: Menu;
 	setMenu: (menu: Menu) => void;
+	isRefetch: boolean;
+	setIsRefetch: (isRefetch: boolean) => void;
 }
 
 export const useBaseStore = create<BaseState>((set) => ({
@@ -27,5 +29,10 @@ export const useBaseStore = create<BaseState>((set) => ({
 	setMenu: (menu: Menu) =>
 		set(() => ({
 			menu: menu,
+		})),
+	isRefetch: false,
+	setIsRefetch: (isRefetch: boolean) =>
+		set(() => ({
+			isRefetch: isRefetch,
 		})),
 }));

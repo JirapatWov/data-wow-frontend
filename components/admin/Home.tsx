@@ -5,6 +5,7 @@ import Card, { CardType } from "../Card";
 import DetailCard from "../concert-detail/DetailCard";
 import CreateCard from "../concert-detail/CreateCard";
 import axios from "axios";
+import { useBaseStore } from "@/stores/base";
 
 type ConcertResponseDto = {
 	id: number;
@@ -24,29 +25,37 @@ const Home = () => {
 	const [loading, setLoading] = useState(true);
 	const [errorMsg, setErrorMsg] = useState<string | null>(null);
 	const [tab, setTab] = useState("overview");
+	const { isRefetch, setIsRefetch } = useBaseStore();
+
+	const fetchData = async () => {
+		try {
+			setLoading(true);
+			setErrorMsg(null);
+			const res = await axios.get<ConcertResponseDto[]>(LIST_ENDPOINT, {
+				headers: { "Content-Type": "application/json" },
+			});
+			setRows(Array.isArray(res.data) ? res.data : []);
+		} catch (err: any) {
+			const apiMessage =
+				err?.response?.data?.message ||
+				err?.response?.data?.error ||
+				err?.message ||
+				"Failed to load concerts.";
+			setErrorMsg(String(apiMessage));
+		} finally {
+			setLoading(false);
+		}
+	};
 
 	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				setLoading(true);
-				setErrorMsg(null);
-				const res = await axios.get<ConcertResponseDto[]>(LIST_ENDPOINT, {
-					headers: { "Content-Type": "application/json" },
-				});
-				setRows(Array.isArray(res.data) ? res.data : []);
-			} catch (err: any) {
-				const apiMessage =
-					err?.response?.data?.message ||
-					err?.response?.data?.error ||
-					err?.message ||
-					"Failed to load concerts.";
-				setErrorMsg(String(apiMessage));
-			} finally {
-				setLoading(false);
-			}
-		};
 		fetchData();
 	}, []);
+
+	useEffect(() => {
+		if (!isRefetch) return;
+		fetchData();
+		setIsRefetch(false);
+	}, [isRefetch]);
 
 	return (
 		<div className="flex flex-col">
@@ -91,6 +100,7 @@ const Home = () => {
 							return (
 								<DetailCard
 									key={data.id}
+									id={data.id}
 									title={data.name}
 									detail={data.detail}
 									seats={data.numberOfSeats}

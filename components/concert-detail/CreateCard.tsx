@@ -3,6 +3,7 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import { useBaseStore } from "@/stores/base";
 
 type CreateConcertPayload = {
 	name: string;
@@ -27,6 +28,7 @@ const CreateCard = ({
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [errorMsg, setErrorMsg] = useState<string | null>(null);
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
+	const { setIsRefetch } = useBaseStore();
 
 	const onChange =
 		(key: keyof typeof form) =>
@@ -61,6 +63,7 @@ const CreateCard = ({
 			toast.success("Create successfully", {
 				position: "top-right",
 			});
+			setIsRefetch(true);
 			setTab("overview");
 			setForm({ name: "", detail: "", numberOfSeats: "" });
 		} catch (err: any) {
